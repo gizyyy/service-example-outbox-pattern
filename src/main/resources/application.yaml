@@ -1,0 +1,48 @@
+spring:
+  application:
+    name: service-example-outbox-pattern
+
+  jackson:
+    deserialization.adjust-dates-to-context-time-zone: false
+    serialization.WRITE_DATES_AS_TIMESTAMPS: true
+    default-property-inclusion: always
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017,localhost:27018,localhost:27019/newdb?replicaSet=rs0&readPreference=primary&ssl=false
+
+
+  cloud.function:
+    definition: handleStudent
+  cloud.stream:
+    function:
+      bindings:
+        handleStudent-in-0: studentAddedEvent
+    binders:
+      kafkaBinder:
+        type: kafka
+        environment:
+          spring.cloud.stream.kafka.binder:
+            consumerProperties:
+              partition.assignment.strategy: org.apache.kafka.clients.consumer.CooperativeStickyAssignor
+              auto.offset.reset: latest
+              enable.auto.commit: false
+              key.deserializer: org.apache.kafka.common.serialization.StringDeserializer
+            producerProperties:
+              key.serializer: org.apache.kafka.common.serialization.StringSerializer
+
+    kafka.bindings:
+      studentAddedEvent.consumer:
+        startOffset: latest
+        enableDlq: true
+        dlqName: error.gizem.yilmaz.student
+
+    bindings:
+      studentAddedEvent:
+        binder: kafkaBinder
+        content-type: application/json
+        destination: gizem.yilmaz.student
+        group: studentGroup
+        consumer:
+          autoStartup: true
+          max-attempts: 3
+          concurrency: 10
