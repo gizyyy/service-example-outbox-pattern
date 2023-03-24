@@ -5,7 +5,7 @@ Project uses @TransactionalEventlistener and AggregateRoot support of Spring in 
 
 @TransactionalEventListener has different phases. This project subjects a use case that I faced in real life project.
 
-#Scenario:
+### Scenario:
 
 1) Service supposed to listen an event from outside world.
 2) Supposed to make some projection or calculations around it and create it's own aggregate and persist.
