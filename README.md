@@ -5,7 +5,7 @@ Project uses @TransactionalEventlistener and AggregateRoot support of Spring in 
 
 @TransactionalEventListener has different phases. This project subjects a use case that I faced in real life project.
 
-Scenario:
+#Scenario:
 
 1) Service supposed to listen an event from outside world.
 2) Supposed to make some projection or calculations around it and create it's own aggregate and persist.
@@ -16,3 +16,27 @@ Scenario:
 With this way, db change and emission of Event Carried State Transfer is bounded to each other and if one fails, the other one will not work too.
 
 AFTER_COMPLETATION block will work when those two successfully works. Undepended from their transaction boundries.
+
+### Installing
+1. Clone this repository anywhere on your machine:
+```
+git clone git@github.com:gizyyy/service-example-outbox-pattern.git
+```
+
+2. Run docker compose build
+```
+docker-compose up -d --build
+```
+
+## Installing dependencies
+```bash
+./gradlew build
+```
+
+## Tests and checks
+To run all tests:
+```bash
+./gradlew test
+```
+
+
